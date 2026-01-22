@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Filament\Resources\KategoriBarangs\Pages;
+
+use App\Filament\Resources\KategoriBarangs\KategoriBarangResource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Resources\Pages\EditRecord;
+
+class EditKategoriBarang extends EditRecord
+{
+    protected static string $resource = KategoriBarangResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            DeleteAction::make(),
+            ForceDeleteAction::make(),
+            RestoreAction::make(),
+        ];
+    }
+}

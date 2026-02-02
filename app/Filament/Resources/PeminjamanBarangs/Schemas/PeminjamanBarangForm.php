@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PeminjamanBarangs\Schemas;
 use App\Enums\KondisiBarang;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -43,13 +44,11 @@ class PeminjamanBarangForm
             ->minDate(now()->startOfDay())
             ->maxDate(now()->endOfYear()),
 
-            DatePicker::make('tanggal_kembali')
-            ->label('Tanggal Kembali')
-            ->helperText('Opsional, isi jika sudah diketahui')
-            ->minDate(now()->startOfDay())
-            ->maxDate(now()->endOfYear()),
 
-        
+            Textarea::make('keperluan')
+            ->label('Keperluan')
+            ->helperText('opsional, deskripsikan keperluan anda dalam meminjam barang')
+            ->rows(3)
             ])
       ]);
     }

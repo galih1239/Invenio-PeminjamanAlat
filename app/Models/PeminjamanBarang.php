@@ -6,8 +6,6 @@ use App\Enums\StatusPeminjaman;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-
 class PeminjamanBarang extends Model
 {
     use SoftDeletes;
@@ -15,11 +13,12 @@ class PeminjamanBarang extends Model
 //mendefinisikan tabel yang bisa diisi
     protected $fillable = [
         'peminjaman_id',
+        'petugas_id',
         'barang_id',
+        'keperluan',
         'tanggal_disetujui',
         'tanggal_pinjam',
         'tanggal_kembali',
-        'jumlah',
         'status',
 
     ];
@@ -45,6 +44,11 @@ class PeminjamanBarang extends Model
         return $this->belongsTo(Barang::class);
 
     }
+
+    public function verifikasiPengembalian()
+{
+    return $this->hasOne(VerifikasiPengembalian::class, 'peminjaman_id');
+}
     
 
 }

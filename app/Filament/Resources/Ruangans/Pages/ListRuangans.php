@@ -18,7 +18,7 @@ public function getHeading(): string|Htmlable
 }
 public function getSubHeading(): string|Htmlable|null
 {
-    return 'Ini adalah Ruangan';
+    return 'Ini adalah Data Ruangan';
 }
     protected function getHeaderActions(): array
     {

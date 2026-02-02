@@ -9,23 +9,26 @@ use App\Filament\Resources\PeminjamanBarangs\Pages\ListPeminjamanBarangs;
 use App\Filament\Resources\PeminjamanBarangs\Schemas\PeminjamanBarangForm;
 use App\Filament\Resources\PeminjamanBarangs\Tables\PeminjamanBarangsTable;
 use App\Models\PeminjamanBarang;
+use App\Enums\StatusPeminjaman;
 use BackedEnum;
+use Illuminate\Support\Facades\Auth;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class PeminjamanBarangResource extends Resource
 {
     protected static ?string $model = PeminjamanBarang::class;
 
+    protected static string|UnitEnum|null $navigationGroup = "Aktivitas";
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
+
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::ClipboardDocumentList;
 
-    protected static string|UnitEnum|null $navigationGroup = "Aktivitas";
-    protected static ?string $recordTitleAttribute = 'name';
     public static function canViewAny(): bool
     {
         return Auth::user()?->role == HakAkses::PENGGUNA;
@@ -34,6 +37,9 @@ class PeminjamanBarangResource extends Resource
     {
         return Auth::user()?->role == HakAkses::PENGGUNA;
     }
+
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Schema $schema): Schema
     {
         return PeminjamanBarangForm::configure($schema);
@@ -58,5 +64,11 @@ class PeminjamanBarangResource extends Resource
             'create' => CreatePeminjamanBarang::route('/create'),
             'edit' => EditPeminjamanBarang::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereIn('status', StatusPeminjaman::active());
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\BarangStats;
+use App\Filament\Widgets\BarangTerpopulerChart;
 use App\Filament\Widgets\DashboardStats;
+use App\Filament\Widgets\PeminjamanTerakhirWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -13,6 +16,9 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use App\Filament\Widgets\PeminjamStats;
+use App\Filament\Widgets\PertumbuhanPenggunaChart;
+use App\Filament\Widgets\PetugasPeminjamanChart;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -32,6 +38,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Violet,
             ])
+            ->databaseNotifications()
+            ->authGuard('web')
             ->font(family:'Nunito')
             ->sidebarCollapsibleOnDesktop(condition:true)
             ->brandLogo(logo: asset(path: 'logo/inventra_light.svg'))
@@ -45,6 +53,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                DashboardStats::class,
+               PeminjamStats::class,
+                BarangStats::class,
+                PetugasPeminjamanChart::class,
+                PeminjamanTerakhirWidget::class,
+                PertumbuhanPenggunaChart::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -59,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->databaseNotifications();
     }
 }

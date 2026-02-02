@@ -5,17 +5,23 @@ namespace App\Enums;
 enum StatusPeminjaman: string
 {
     case BELUM_DISETUJUI = 'menunggu_persetujuan';
+    case DIBATALKAN = 'dibatalkan';
+    case DITOLAK = 'ditolak';
     case DIPINJAM = 'dipinjam';
     case DIKEMBALIKAN = 'dikembalikan';
     case TERLAMBAT = 'terlambat';
+    case MENUNGGU_VERIFIKASI = 'Meunggu_verifikasi';
 
-   public function label(): string
+    public function label(): string
     {
         return match ($this) {
-            self::BELUM_DISETUJUI => 'Menunggu',
+            self::BELUM_DISETUJUI => 'Menunggu Persetujuan',
             self::DIPINJAM => 'Dipinjam',
+            self::DITOLAK => 'Ditolak',
+            self::DIBATALKAN => 'Dibatalkan',
             self::DIKEMBALIKAN => 'Dikembalikan',
             self::TERLAMBAT => 'Terlambat',
+            self::MENUNGGU_VERIFIKASI => 'Menunggu_Verifikasi',
         };
     }
 
@@ -26,7 +32,27 @@ enum StatusPeminjaman: string
             self::DIPINJAM => 'primary',
             self::DIKEMBALIKAN => 'success',
             self::TERLAMBAT => 'danger',
+            self::DIBATALKAN => 'danger',
+            self::DITOLAK => 'danger',
+            self::MENUNGGU_VERIFIKASI => 'warning',
         };
-    
+    }
+
+    public static function inactive(): array
+    {
+        return [
+            self::DIKEMBALIKAN,
+            self::DIBATALKAN,
+            self::DITOLAK,
+        ];
+    }
+
+    public static function active(){
+        return [
+            self::BELUM_DISETUJUI,
+            self::DIPINJAM,
+            self::TERLAMBAT,
+            self::MENUNGGU_VERIFIKASI
+        ];
     }
 }

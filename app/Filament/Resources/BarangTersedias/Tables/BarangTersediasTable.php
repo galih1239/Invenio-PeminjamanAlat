@@ -21,6 +21,7 @@ class BarangTersediasTable
     {
         return $table
             ->columnManager(false)
+            ->recordUrl(null)
             ->emptyStateHeading('Barang tidak tersedia')
             ->emptyStateDescription('Saat ini seluruh barang sedang dipinjam')
             ->columns([

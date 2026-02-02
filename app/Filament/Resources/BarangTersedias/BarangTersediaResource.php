@@ -60,7 +60,7 @@ class BarangTersediaResource extends Resource
         return parent::getEloquentQuery()
             ->where('kondisi', KondisiBarang::BAIK)
             ->whereDoesntHave('peminjaman', function (Builder $query) {
-                $query->where('status', '!=', StatusPeminjaman::DIKEMBALIKAN);
+                $query->whereNotIn('status', StatusPeminjaman::inactive());
             });
     }
 

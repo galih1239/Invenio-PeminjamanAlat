@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\DataPengembalians;
 
 use App\Enums\HakAkses;
-use App\Enums\StatusPeminjaman;
 use App\Filament\Resources\DataPengembalians\Pages\ListDataPengembalians;
 use App\Filament\Resources\DataPengembalians\Pages\ViewDataPengembalian;
 use App\Filament\Resources\DataPengembalians\Schemas\DataPengembalianForm;
@@ -11,6 +10,7 @@ use App\Filament\Resources\DataPengembalians\Schemas\DataPengembalianInfolist;
 use App\Filament\Resources\DataPengembalians\Tables\DataPengembaliansTable;
 use App\Models\DataPengembalian;
 use App\Models\PeminjamanBarang;
+use App\Enums\StatusPeminjaman;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -70,14 +70,6 @@ protected static ?string $label = "Pengembalian Barang";
             'view' => ViewDataPengembalian::route('/{record}'),
         ];
     }
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->where('status', StatusPeminjaman::MENUNGGU_VERIFIKASI)
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
-    }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
@@ -86,4 +78,21 @@ protected static ?string $label = "Pengembalian Barang";
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+    
+        ->with('peminjaman')
+        ->whereNotIn('status', [
+            StatusPeminjaman::BELUM_DISETUJUI,
+            StatusPeminjaman::DITOLAK,
+            StatusPeminjaman::DIPINJAM,
+        ])
+
+        ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);
+}
+
 }

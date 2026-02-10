@@ -7,7 +7,7 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($features as $feature)
                 <div class="p-6 bg-white rounded-2xl hover:shadow-lg transition-all border border-slate-100">
-                    <div class="w-10 h-10 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center mb-4">
+                    <div class="w-10 h-10 bg-sky-50 text-sky-600 rounded-lg flex items-center justify-center mb-4">
                         <i data-lucide="{{ $feature['icon'] }}"></i>
                     </div>
                     <h4 class="font-bold mb-2">{{ $feature['title'] }}</h4>

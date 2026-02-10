@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
+use App\Enums\StatusPeminjaman;
 
 class PeminjamanBarangForm
 {
@@ -17,20 +18,20 @@ class PeminjamanBarangForm
     {
       return $schema
       ->components([
-        Section::make('Informasi Peminjaman')
-        ->description(
-            fn(string $operation):string=> $operation === 'create' ?'Lengkapi data peminjaman barang' :'Pastikan data peminjaman sudah benar')
-            ->components([
-                Select::make('barang_id')
-                ->label('Barang')
-                ->relationship(
-                name: 'barang', 
-                titleAttribute : 'name',
-                modifyQueryUsing : fn (Builder $query) =>
-                $query
+        Select::make('barang_id')
+    ->label('Barang')
+    ->relationship(
+        name: 'barang',
+        titleAttribute: 'name',
+        modifyQueryUsing: fn (Builder $query) =>
+            $query
                 ->where('kondisi', KondisiBarang::BAIK->value)
+                ->whereDoesntHave('peminjamanBarangs', function ($q) {
+                    $q->whereIn('status', StatusPeminjaman::active());
+                })
                 ->with('category')
                 )
+
             ->searchable(['kode_barang', 'id'])
             ->preload()
             ->getOptionLabelFromRecordUsing(
@@ -50,6 +51,6 @@ class PeminjamanBarangForm
             ->helperText('opsional, deskripsikan keperluan anda dalam meminjam barang')
             ->rows(3)
             ])
-      ]);
+      ;
     }
 }

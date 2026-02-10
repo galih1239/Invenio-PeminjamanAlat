@@ -20,4 +20,23 @@ class EditBarang extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    /**
+     * Pastikan kode_barang tidak null saat update
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // kalau kode_barang null (karena disabled field), ambil dari record lama
+        if (!isset($data['kode_barang']) || empty($data['kode_barang'])) {
+            $data['kode_barang'] = $this->record->kode_barang;
+        }
+
+        return $data;
+    }
+    protected function getRedirectUrl(): string
+{
+    // Redirect ke index resource setelah berhasil update
+    return $this->getResource()::getUrl('index');
+}
+
 }

@@ -96,7 +96,7 @@ class PengajuanPeminjamenTable
                             ->title('Pengajuan Disetujui')
                             ->body("Pengajuan peminjaman barang {$record->barang->name} telah disetujui.")
                             ->success()
-                            ->sendToDatabase($record->peminjam);
+    ->sendToDatabase(Auth::user());
 
                         // TOAST KE PETUGAS
                         Notification::make()

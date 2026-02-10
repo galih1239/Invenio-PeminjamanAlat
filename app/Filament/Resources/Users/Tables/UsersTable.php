@@ -87,7 +87,7 @@ class UsersTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->color('warning'),
-                    ViewAction::make()->color(Color::Indigo),
+                    ViewAction::make()->color(Color::Sky),
                 ])
             ])
             ->toolbarActions([

@@ -29,11 +29,12 @@ class BarangForm
                                 // Kode Barang - Disabled, auto generate
                                 TextInput::make('kode_barang')
                                     ->label('Kode Barang')
-                                    ->disabled()
+                                    ->disabled(fn(string $operation) => $operation === 'edit')
                                     ->dehydrated()
                                     ->placeholder('Otomatis dibuat sistem')
                                     ->helperText('Kode akan dibuat otomatis')
                                     ->columnSpan(1),
+
 
                                 // Nama Barang - Required
                                 TextInput::make('name')

@@ -46,7 +46,7 @@ class CreateBarang extends CreateRecord
 
             $last = Barang::withTrashed()
                 ->where('kode_barang', 'like', $kategori->prefix . '-%')
-                ->orderByRaw('CAST(SUBSTRING(kode_barang, ' . (strlen($kategori->prefix) + 2) . ') AS INTEGER) DESC')
+                ->orderByRaw('CAST(SUBSTRING(kode_barang, ' . (strlen($kategori->prefix) + 2) . ') AS UNSIGNED) DESC')
                 ->lockForUpdate()
                 ->first();
 

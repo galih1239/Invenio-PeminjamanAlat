@@ -124,33 +124,58 @@ class PeminjamanBarangsTable
                      ]);
                 }),
 
-                // Kembalikan Barang (Terlambat)
-                Action::make('kembalikan_terlambat')
-                    ->label('Kembalikan')
-                    ->button()
-                    ->color(Color::Red)
-                    ->icon(Heroicon::Clock)
-                    ->visible(fn($record) => $record->status === StatusPeminjaman::TERLAMBAT)
-                    ->requiresConfirmation()
-                    ->modalHeading('Konfirmasi Pengembalian & Pembayaran')
-                    ->modalDescription(function ($record) {
-                        $hariTerlambat = Carbon::parse($record->tanggal_kembali)
-                            ->startOfDay()
-                            ->diffInDays(now()->startOfDay());
+                // Kembalikan Barang (Terlambat
 
-                        $denda = $hariTerlambat * 5000;
+Action::make('kembalikan_terlambat')
+    ->label('Kembalikan')
+    ->button()
+    ->color(Color::Red)
+    ->icon(Heroicon::Clock)
+    ->visible(fn ($record) => $record->status === StatusPeminjaman::TERLAMBAT)
+    ->requiresConfirmation()
+    ->modalHeading('Konfirmasi Pengembalian & Pembayaran')
 
-                        return new HtmlString(
-                            "Anda terlambat <strong>{$hariTerlambat} hari</strong>.<br> Total denda: <strong>Rp " . number_format($denda, 0, ',', '.') . "</strong>"
-                        );
-                    })
+    // 🔹 HANYA UNTUK TAMPILAN
+    ->modalDescription(function ($record) {
+        $hariTerlambat = Carbon::parse($record->tanggal_kembali)
+            ->startOfDay()
+           ->diffInDays(now()->startOfDay(), false);
+
+        $denda = $hariTerlambat * 5000;
+
+        return new HtmlString(
+            "Anda terlambat <strong>{$hariTerlambat} hari</strong>.<br>
+             Total denda: <strong>Rp " . number_format($denda) . "</strong>"
+        );
+    })
+
+    // 🔥 INI YANG SEBELUMNYA KAMU BELUM PUNYA
+    ->action(function ($record) {
+
+        // 1️⃣ hitung ulang (WAJIB, JANGAN PERCAYA UI)
+        $hariTerlambat = Carbon::parse($record->tanggal_kembali)
+            ->startOfDay()
+            ->diffInDays(now()->startOfDay());
+
+        $totalBayar = max(0, $hariTerlambat * 5000);
+
+        // 2️⃣ simpan ke verifikasi_pengembalians
+        VerifikasiPengembalian::updateOrCreate(
+            ['peminjaman_id' => $record->id],
+            [
+                'total_bayar'   => $totalBayar,
+                'terverifikasi' => false,
+            ]
+        );
+
+        // 3️⃣ update status peminjaman
+        $record->update([
+            'status' => StatusPeminjaman::MENUNGGU_VERIFIKASI,
+        ]);
+    })
+
                     
                     ->form([
-                        Select::make('metode_pembayaran')
-                            ->label('Metode Pembayaran')
-                            ->options(MethodePembayaran::class)
-                            ->required()
-                            ->reactive(),
 
                         FileUpload::make('path_bukti_pembayaran')
                             ->label('Bukti Pembayaran')
@@ -161,20 +186,6 @@ class PeminjamanBarangsTable
                             ->maxSize(2048)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
                             ->imagePreviewHeight('200'),
-
-                        Select::make('jenis_ewallet')
-                            ->label('Pilih E-Wallet')
-                            ->options(OpsiEwallet::options())
-                            ->visible(fn(Get $get) => $get('metode_pembayaran') === MethodePembayaran::EWALLET)
-                            ->required(fn(Get $get) => $get('metode_pembayaran') === MethodePembayaran::EWALLET)
-                            ->reactive(),
-
-                        Select::make('bank_tujuan')
-                            ->label('Pilih Bank')
-                            ->options(OpsiBank::options())
-                            ->visible(fn(Get $get) => $get('metode_pembayaran') === MethodePembayaran::TRANSFER)
-                            ->required(fn(Get $get) => $get('metode_pembayaran') === MethodePembayaran::TRANSFER)
-                            ->reactive(),
 
                         TextInput::make('keterangan')
                             ->label('Catatan (opsional)')
@@ -199,11 +210,7 @@ class PeminjamanBarangsTable
                             VerifikasiPengembalian::create([
                                 'peminjaman_id'          => $record->id,
                                 'terverifikasi'          => false,
-                                'metode_pembayaran'     => $data['metode_pembayaran'],
                                 'path_bukti_pembayaran' => $data['path_bukti_pembayaran'],
-                                'nama_bank'             => $data['bank_tujuan'] ?? null,
-                                'nama_ewallet'          => $data['jenis_ewallet'] ?? null,
-                                'total_bayar'           => $totalBayar,
                                 'catatan'               => $data['keterangan'] ?? null,
                             ]);
 

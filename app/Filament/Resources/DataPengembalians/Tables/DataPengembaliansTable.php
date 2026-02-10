@@ -16,8 +16,11 @@ use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\VerifikasiPengembalian;
+use Carbon\Carbon;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\HtmlString;
 
 class DataPengembaliansTable
 {
@@ -46,6 +49,8 @@ class DataPengembaliansTable
                     ->formatStateUsing(fn($state) => Str::limit($state, 20))
                     ->tooltip(fn($state) => $state)
                     ->weight('bold'),
+
+                
 
                 TextColumn::make('barang.name')
                     ->label('Nama Barang')
@@ -84,34 +89,48 @@ class DataPengembaliansTable
                     ->button()
                     ->modalHeading('Verifikasi Pengembalian')
                     ->modalDescription('Periksa data peminjaman sebelum memverifikasi.')
-                    ->form(fn($record) => [
-                        TextInput::make('total_bayar')
-                            ->label('Total Bayar')
-                            ->numeric()
-                            ->required()
-                            ->default($record->verifikasiPengembalian?->total_bayar),
+                    // Menggunakan fillForm agar data dari relasi terisi dengan benar ke dalam form
+                    ->fillForm(fn($record) => [
+                        'path_bukti_pembayaran' => $record->verifikasiPengembalian?->path_bukti_pembayaran,
+                        'catatan' => $record->verifikasiPengembalian?->catatan,
+                        'terverifikasi' => true,
+                    ])
+                    ->form([
+                     
+                        
 
-                        TextInput::make('nama_bank')
-                            ->label('Nama Bank')
-                            ->default($record->verifikasiPengembalian?->nama_bank),
+Placeholder::make('bukti_preview')
+    ->label('Bukti Pembayaran')
+    ->content(function ($record) {
+        if (!$record?->verifikasiPengembalian?->path_bukti_pembayaran) {
+            return '-';
+        }
 
-                        TextInput::make('nama_ewallet')
-                            ->label('Nama E-Wallet')
-                            ->default($record->verifikasiPengembalian?->nama_ewallet),
+       $url = Storage::url(
+    $record->verifikasiPengembalian->path_bukti_pembayaran
+);
+        return new HtmlString("
+            <div class='space-y-2'>
+                <img src='{$url}' class='max-h-64 rounded-lg border'/>
+                <div>
+                    <a href='{$url}' target='_blank' class='text-primary-600 underline'>
+                        Lihat
+                    </a>
+                    &nbsp;|&nbsp;
+                    <a href='{$url}' download class='text-primary-600 underline'>
+                        Download
+                    </a>
+                </div>
+            </div>
+        ");
+    }),
 
-                        FileUpload::make('path_bukti_pembayaran')
-                            ->label('Bukti Pembayaran')
-                            ->disk('public')
-                            ->directory('bukti_pembayaran')
-                            ->image()
-                            ->openable()
-                            ->downloadable()
-                            ->previewable()
-                            ->default(fn($record) => $record->verifikasiPengembalian?->path_bukti_pembayaran),
+
+// Di-disable agar tidak diubah oleh petugas
 
                         Textarea::make('catatan')
                             ->label('Catatan Petugas')
-                            ->default($record->verifikasiPengembalian?->catatan),
+                            ->placeholder('Tambahkan catatan verifikasi...'),
 
                         Toggle::make('terverifikasi')
                             ->label('Terverifikasi')
@@ -120,9 +139,7 @@ class DataPengembaliansTable
                     ])
 
                     ->action(function (array $data, $record) {
-
                         DB::transaction(function () use ($data, $record) {
-
                             $verifikasi = VerifikasiPengembalian::where('peminjaman_id', $record->id)
                                 ->lockForUpdate()
                                 ->firstOrFail();

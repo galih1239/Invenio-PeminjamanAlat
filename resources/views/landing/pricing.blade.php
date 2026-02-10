@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harga - Invendo Apps</title>
+    <title>Harga - Invenio Apps</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -45,13 +45,13 @@
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <a href="index.html" class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center text-white">
+                    <div class="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center text-white">
                         <i data-lucide="package"></i>
                     </div>
-                    <span class="text-xl font-bold tracking-tight text-slate-800">Invendo</span>
+                    <span class="text-xl font-bold tracking-tight text-slate-800">Invenio</span>
                 </a>
             </div>
-            <a href="/" class="text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors flex items-center gap-1">
+            <a href="/" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors flex items-center gap-1">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i> Kembali ke Beranda
             </a>
         </div>
@@ -61,10 +61,10 @@
     <section class="pt-32 pb-20 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <div class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-violet-600 uppercase bg-violet-50 rounded-full">
+                <div class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-sky-600 uppercase bg-sky-50 rounded-full">
                     Pilihan Paket Harga
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Pilih Paket yang Sesuai <br>dengan <span class="text-violet-600">Kebutuhan Anda</span></h1>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Pilih Paket yang Sesuai <br>dengan <span class="text-sky-600">Kebutuhan Anda</span></h1>
                 <p class="text-slate-500 max-w-2xl mx-auto text-lg">Investasi cerdas untuk efisiensi aset jangka panjang. Mulai dari yang gratis hingga fitur tanpa batas.</p>
             </div>
 
@@ -103,8 +103,8 @@
                 </div>
 
                 <!-- Pro Plan -->
-                <div class="pricing-card p-8 bg-white rounded-3xl border-2 border-violet-500 shadow-2xl shadow-violet-100 flex flex-col relative scale-105 z-10">
-                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-violet-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full">
+                <div class="pricing-card p-8 bg-white rounded-3xl border-2 border-sky-500 shadow-2xl shadow-sky-100 flex flex-col relative scale-105 z-10">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-sky-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full">
                         Terpopuler
                     </div>
                     <div class="mb-8">
@@ -119,20 +119,20 @@
 
                     <ul class="space-y-4 mb-10 flex-grow text-sm">
                         <li class="flex items-center gap-3 text-slate-700 font-medium">
-                            <i data-lucide="check" class="w-5 h-5 text-violet-600"></i> Barang Tak Terbatas
+                            <i data-lucide="check" class="w-5 h-5 text-sky-600"></i> Barang Tak Terbatas
                         </li>
                         <li class="flex items-center gap-3 text-slate-700 font-medium">
-                            <i data-lucide="check" class="w-5 h-5 text-violet-600"></i> Multi-Admin (Hingga 5)
+                            <i data-lucide="check" class="w-5 h-5 text-sky-600"></i> Multi-Admin (Hingga 5)
                         </li>
                         <li class="flex items-center gap-3 text-slate-700 font-medium">
-                            <i data-lucide="check" class="w-5 h-5 text-violet-600"></i> Laporan Lanjutan & Statistik
+                            <i data-lucide="check" class="w-5 h-5 text-sky-600"></i> Laporan Lanjutan & Statistik
                         </li>
                         <li class="flex items-center gap-3 text-slate-700 font-medium">
-                            <i data-lucide="check" class="w-5 h-5 text-violet-600"></i> Notifikasi Email & WhatsApp
+                            <i data-lucide="check" class="w-5 h-5 text-sky-600"></i> Notifikasi Email & WhatsApp
                         </li>
                     </ul>
 
-                    <button class="w-full py-4 px-6 bg-violet-600 text-white font-bold rounded-2xl hover:bg-violet-700 transition-all shadow-lg shadow-violet-200">
+                    <button class="w-full py-4 px-6 bg-sky-600 text-white font-bold rounded-2xl hover:bg-sky-700 transition-all shadow-lg shadow-sky-200">
                         Pilih Paket Pro
                     </button>
                 </div>

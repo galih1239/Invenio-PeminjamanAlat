@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\MethodePembayaran;
+use App\Enums\OpsiBank;
+use App\Enums\OpsiEwallet;
 use Illuminate\Database\Eloquent\Model;
 
 class VerifikasiPengembalian extends Model
@@ -10,7 +12,7 @@ class VerifikasiPengembalian extends Model
     protected $fillable = [
         'peminjaman_id',
         'terverifikasi',
-        'metode_pembbayaran',
+        'metode_pembayaran',
         'path_bukti_pembayaran',
         'nama_bank',
         'nama_ewallet',
@@ -22,6 +24,8 @@ public function peminjaman()
     return $this->belongsTo(PeminjamanBarang::class);
 }
     protected $casts = [
-        'metode_pembayaran' => MethodePembayaran::class
+        'metode_pembayaran' => MethodePembayaran::class,
+        'nama_bank' => OpsiBank::class,
+        'nama_ewallet' => OpsiEwallet::class
     ];
 }

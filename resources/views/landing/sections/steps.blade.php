@@ -7,7 +7,7 @@
         <div class="space-y-16">
             @foreach($steps as $step)
                 <div class="flex gap-8 relative step-item">
-                    <div class="flex-none w-10 h-10 bg-violet-600 text-white rounded-full flex items-center justify-center font-bold z-10 step-line">
+                    <div class="flex-none w-10 h-10 bg-sky-600 text-white rounded-full flex items-center justify-center font-bold z-10 step-line">
                         {{ $step['number'] }}
                     </div>
                     <div>

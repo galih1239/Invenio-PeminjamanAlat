@@ -2,119 +2,90 @@
 
 namespace App\Filament\Resources\Barangs\Tables;
 
-use App\Enums\KondisiBarang;
-use Filament\Actions\ActionGroup;
+use Filament\Tables\Table;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ViewAction;
-use Filament\Support\Colors\Color;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use App\Models\Barang;
+use Filament\Actions\Action;
 
 class BarangsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->columnManager(false)
-            ->emptyStateHeading('Tidak ada Data Barang')
-            ->emptyStateDescription('Mulai tambahkan barang ke sistem anda')
+            ->paginated(false)
+            ->defaultSort('name', 'asc')
             ->columns([
                 ImageColumn::make('foto')
-                    ->extraImgAttributes([
-                        'alt' => 'Logo',
-                        'loading' => 'lazy'
-                    ])
                     ->label('Foto')
-                    ->square()
-                    ->defaultImageUrl(url('/images/placeholder.png'))
-                    ->toggleable(),
-
-                TextColumn::make('kode_barang')
-                    ->label('Kode Barang')
-                    ->searchable()
-                    ->sortable()
-                    ->copyable()
-                    ->copyMessage('Kode barang disalin!')
-                    ->weight('bold'),
+                    ->circular(),
 
                 TextColumn::make('name')
                     ->label('Nama Barang')
-                    ->searchable()
-                    ->sortable(),
+                    ->weight('bold'),
 
                 TextColumn::make('category.name')
                     ->label('Kategori')
-                    ->badge()
-                    ->searchable()
-                    ->sortable(),
+                    ->badge(),
 
                 TextColumn::make('room.name')
-                    ->label('Lokasi Ruang')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Ruangan'),
 
-                TextColumn::make('kondisi')
+                TextColumn::make('jumlah_barang')
+                    ->label('Jumlah')
                     ->badge()
-                    ->label('Kondisi')
-                    ->formatStateUsing(fn(KondisiBarang $state): string => $state->label())
-                    ->color(fn(KondisiBarang $state): string => match ($state) {
-                        KondisiBarang::BAIK => 'success',
-                        KondisiBarang::PERBAIKAN => 'warning',
-                        KondisiBarang::RUSAK => 'danger',
-                    })
-                    ->icon(fn(KondisiBarang $state): string => match ($state) {
-                        KondisiBarang::BAIK => 'heroicon-o-check-circle',
-                        KondisiBarang::RUSAK => 'heroicon-o-x-circle',
-                        KondisiBarang::PERBAIKAN => 'heroicon-o-wrench',
-                    }),
-
-                TextColumn::make('creator.name')
-                    ->label('Dibuat Oleh')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime('d M Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->color('success'),
             ])
-            ->filters([
-                SelectFilter::make('category_id')
-                    ->label('Kategori')
-                    ->relationship('category', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->multiple(),
-
-                SelectFilter::make('kondisi')
-                    ->label('Kondisi')
-                    ->options([
-                        'baik' => 'Baik',
-                        'rusak' => 'Rusak',
-                        'perbaikan' => 'Perbaikan',
+            ->actions([
+                Action::make('view_list')
+                    ->label('Lihat Detail')
+                    ->icon('heroicon-o-eye')
+                    ->modalHeading(fn(Barang $record) => "Daftar Barang: {$record->name}")
+                    ->modalWidth('4xl')
+                    ->modalSubmitAction(false)
+                    ->infolist([
+                        RepeatableEntry::make('item_details')
+                            ->label('Detail Unit')
+                            // KUNCI PERBAIKAN: Ambil data unit di sini
+                            ->state(function (Barang $record) {
+                                return Barang::where('name', $record->name)
+                                    ->where('category_id', $record->category_id)
+                                    ->where('room_id', $record->room_id)
+                                    ->get();
+                            })
+                            ->schema([
+                                ImageEntry::make('foto')
+                                    ->hiddenLabel()
+                                    ->circular(),
+                                TextEntry::make('kode_barang')
+                                    ->label('Kode'),
+                                    
+                                TextEntry::make('kondisi')
+                                    ->label('Kondisi')
+                                    ->badge(),
+                                TextEntry::make('catatan')
+                                    ->label('Catatan')
+                                    ->placeholder('-'),
+                            ])
+                            ->columns(4)
+                            
                     ])
-                    ->multiple(),
-            ])
+                     ])
             ->recordActions([
-                ActionGroup::make([
-                    EditAction::make()->color('warning'),
-                    ViewAction::make()->color(Color::Violet)
-                ])
+                EditAction::make(),
+                
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('created_at', 'desc')
-            ->striped();
+            ]);
+            
     }
 }

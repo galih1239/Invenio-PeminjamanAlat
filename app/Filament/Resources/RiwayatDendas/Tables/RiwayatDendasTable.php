@@ -33,9 +33,10 @@ class RiwayatDendasTable
 
 
                 TextColumn::make('total_bayar')
-                    ->label('Total Bayar')
-                    ->money('IDR')
-                    ->sortable(),
+    ->label('Total Bayar')
+    ->money('IDR')
+    ->formatStateUsing(fn ($state) => abs($state)),
+
 
                 TextColumn::make('terverifikasi')
                     ->label('Status')

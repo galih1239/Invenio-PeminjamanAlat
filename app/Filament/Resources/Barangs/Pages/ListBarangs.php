@@ -25,7 +25,7 @@ class ListBarangs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label('Tambah Barang')->icon(Heroicon::Plus)->color(Color::Violet),
+            CreateAction::make()->label('Tambah Barang')->icon(Heroicon::Plus)->color(Color::Sky),
         ];
     }
 }

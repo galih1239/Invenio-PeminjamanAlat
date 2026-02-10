@@ -9,7 +9,7 @@ class LandingPageController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'Invendo - Solusi Manajemen Inventaris Modern',
+            'title' => 'Invenio - Solusi Manajemen Inventaris Modern',
             'problems' => $this->getProblems(),
             'features' => $this->getFeatures(),
             'steps' => $this->getSteps(),
@@ -41,7 +41,7 @@ class LandingPageController extends Controller
             ],
             [
                 'icon' => 'bar-chart-3',
-                'color' => 'amber',
+                'color' => 'sky',
                 'title' => 'Sulit Rekap Laporan',
                 'description' => 'Butuh waktu berjam-jam bahkan berhari-hari hanya untuk membuat satu laporan bulanan.'
             ],

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\KondisiBarang;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Barang extends Model
@@ -30,8 +31,9 @@ class Barang extends Model
         'room_id' => 'integer'
     ];
     
-    public function peminjaman(){
-        return $this->hasMany(PeminjamanBarang::class, 'barang_id');
+    public function peminjamanBarangs(): HasMany
+    {
+        return $this->hasMany(PeminjamanBarang::class);
     }
 
     public function category()

@@ -2,23 +2,14 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\BarangStats;
-use App\Filament\Widgets\BarangTerpopulerChart;
 use App\Filament\Widgets\DashboardStats;
-use App\Filament\Widgets\PeminjamanTerakhirWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
-use App\Filament\Widgets\PeminjamStats;
-use App\Filament\Widgets\PertumbuhanPenggunaChart;
-use App\Filament\Widgets\PetugasPeminjamanChart;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -33,32 +24,29 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')  
+            ->path('admin')
             ->login()
-            ->colors([
-                'primary' => Color::Violet,
-            ])
             ->databaseNotifications()
+            ->colors([
+                'primary' => Color::Sky,
+            ])
             ->authGuard('web')
-            ->font(family:'Nunito')
-            ->sidebarCollapsibleOnDesktop(condition:true)
-            ->brandLogo(logo: asset(path: 'logo/inventra_light.svg'))
-            ->darkModeBrandLogo(logo: asset(path: 'logo/inventra_dark.svg'))
-            ->brandLogoHeight(height:"2.5rem")
+            ->font(family: 'Nunito')
+            ->sidebarCollapsibleOnDesktop(condition: true)
+            ->brandLogo(logo: asset(path: 'logo/invenio_light.svg'))
+            ->darkModeBrandLogo(logo: asset(path: 'logo/invenio_dark.svg'))
+            ->brandLogoHeight(height: '2.5rem')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->resources([
+                \App\Filament\Resources\DataPengembalians\DataPengembalianResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-               DashboardStats::class,
-               PeminjamStats::class,
-                BarangStats::class,
-                PetugasPeminjamanChart::class,
-                PeminjamanTerakhirWidget::class,
-                PertumbuhanPenggunaChart::class,
-
+                DashboardStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -68,12 +56,10 @@ class AdminPanelProvider extends PanelProvider
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
-                DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->databaseNotifications();
+            ]);
     }
 }

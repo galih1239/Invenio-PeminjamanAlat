@@ -3,12 +3,17 @@
 namespace App\Filament\Resources\BarangTersedias\Tables;
 
 use App\Enums\KondisiBarang;
+use App\Models\Barang;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -19,79 +24,62 @@ class BarangTersediasTable
 {
     public static function configure(Table $table): Table
     {
-        return $table
-            ->columnManager(false)
-            ->recordUrl(null)
-            ->emptyStateHeading('Barang tidak tersedia')
-            ->emptyStateDescription('Saat ini seluruh barang sedang dipinjam')
+       return $table
+            ->paginated(false)
+            ->defaultSort('name', 'asc')
             ->columns([
                 ImageColumn::make('foto')
-                    ->extraImgAttributes([
-                        'alt' => 'Logo',
-                        'loading' => 'lazy'
-                    ])
                     ->label('Foto')
-                    ->square()
-                    ->defaultImageUrl(url('/images/placeholder.png'))
-                    ->toggleable(),
-
-                TextColumn::make('kode_barang')
-                    ->label('Kode Barang')
-                    ->searchable()
-                    ->sortable()
-                    ->copyable()
-                    ->copyMessage('Kode barang disalin!')
-                    ->weight('bold'),
+                    ->circular(),
 
                 TextColumn::make('name')
                     ->label('Nama Barang')
-                    ->searchable()
-                    ->sortable(),
+                    ->weight('bold'),
 
                 TextColumn::make('category.name')
                     ->label('Kategori')
-                    ->badge()
-                    ->searchable()
-                    ->sortable(),
+                    ->badge(),
 
                 TextColumn::make('room.name')
-                    ->label('Lokasi Ruang')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Ruangan'),
 
-                TextColumn::make('kondisi')
+                TextColumn::make('jumlah_barang')
+                    ->label('Jumlah')
                     ->badge()
-                    ->label('Kondisi')
-                    ->formatStateUsing(fn(KondisiBarang $state): string => $state->label())
-                    ->color(fn(KondisiBarang $state): string => match ($state) {
-                        KondisiBarang::BAIK => 'success',
-                        KondisiBarang::PERBAIKAN => 'warning',
-                        KondisiBarang::RUSAK => 'danger',
-                    })
-                    ->icon(fn(KondisiBarang $state): string => match ($state) {
-                        KondisiBarang::BAIK => 'heroicon-o-check-circle',
-                        KondisiBarang::RUSAK => 'heroicon-o-x-circle',
-                        KondisiBarang::PERBAIKAN => 'heroicon-o-wrench',
-                    }),
+                    ->color('success'),
             ])
-            ->filters([
-                SelectFilter::make('category_id')
-                    ->label('Kategori')
-                    ->relationship('category', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->multiple(),
-
-                SelectFilter::make('kondisi')
-                    ->label('Kondisi')
-                    ->options([
-                        'baik' => 'Baik',
-                        'rusak' => 'Rusak',
-                        'perbaikan' => 'Perbaikan',
+            ->actions([
+                Action::make('view_list')
+                    ->label('Lihat Detail')
+                    ->icon('heroicon-o-eye')
+                    ->modalHeading(fn(Barang $record) => "Daftar Barang: {$record->name}")
+                    ->modalWidth('4xl')
+                    ->modalSubmitAction(false)
+                    ->infolist([
+                        RepeatableEntry::make('item_details')
+                            ->label('Detail Unit')
+                            // KUNCI PERBAIKAN: Ambil data unit di sini
+                            ->state(function (Barang $record) {
+                                return Barang::where('name', $record->name)
+                                    ->where('category_id', $record->category_id)
+                                    ->where('room_id', $record->room_id)
+                                    ->get();
+                            })
+                            ->schema([
+                                ImageEntry::make('foto')
+                                    ->hiddenLabel()
+                                    ->circular(),
+                                TextEntry::make('kode_barang')
+                                    ->label('Kode'),
+                                TextEntry::make('kondisi')
+                                    ->label('Kondisi')
+                                    ->badge(),
+                                TextEntry::make('catatan')
+                                    ->label('Catatan')
+                                    ->placeholder('-'),
+                            ])
+                            ->columns(4)
                     ])
-                    ->multiple(),
-            ])
-            ->defaultSort('created_at', 'desc')
-            ->striped();
+            ]);
     }
 }
